@@ -234,6 +234,17 @@ nav.a-menu
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    position: relative;
+}
+
+.a-value-insert p
+{
+    position: absolute;
+    top: 0;
+    right: 30px;
+    font-family: "Quicksand";
+    font-size: 17px;
+    font-weight: 300;
 }
 
 .a-value-insert span
@@ -271,9 +282,10 @@ nav.a-menu
     /*border: 1px solid rgba(186, 186, 186, 0.11);*/
 }
 
-.buttons-config li:not(.opacity-buttons):hover
+.buttons-config li:not(.opacity-buttons):hover,
+.buttons-action li:hover
 {
-    background-color: #a8a7a6;
+    background-color: rgba(168, 167, 166, 0.43) !important;
 }
 
 .opacity-buttons
@@ -311,4 +323,9 @@ nav.a-menu
 {
     font-weight: 600;
     background-color: #fff !important;
+}
+
+.buttons-backcolor
+{
+    background-color: #a8a7a6 !important;
 }
