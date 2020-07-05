@@ -42,8 +42,6 @@ document.addEventListener("keyup", (e) =>
 
 Calc.ActionCalc = (e) =>
 {
-	let resultOperation = null
-
 	if(e)
 	{
 		if(e.key)
@@ -70,18 +68,21 @@ Calc.ActionCalc = (e) =>
 				{
 					if(Calc.status && Calc.value.length > 0)
 					{
-						Calc.temporary = Calc.Operation(Calc.value, Calc.Operator)
-						Calc.value = Calc.temporary
-						Calc.valueString += " = " + Calc.temporary
+						Calc.temporary = Calc.Operation(Calc.value)
+						if(Calc.value != Calc.temporary)
+						{
+							Calc.value = Calc.temporary
+							Calc.valueString += " = " + Calc.temporary
 
-						js(".a-value-insert p").innerHTML = Calc.valueString
+							js(".a-value-insert p").innerHTML = Calc.valueString
+						}
 
 						keyFind 	= true
 						Calc.status = true
 						Calc.count  = 0
 					}
 				}
-				else if(e.key == "Backspace" && Calc.count > 0)
+				else if(e.key == "Backspace")
 				{
 					let verifyS = Calc.VerifyOperator(Calc.value.charAt(Calc.value.length - 1), Calc.op)
 
@@ -90,14 +91,11 @@ Calc.ActionCalc = (e) =>
 						Calc.value 		 = Calc.value.substring(0, Calc.value.length - 1)
 						Calc.valueString = Calc.valueString.substring(0, Calc.valueString.length - 2)
 						Calc.temporary   = Calc.temporary.substring(0, Calc.temporary.length - 1)
-						Calc.count 		 = 1
-
-						console.log(Calc.value)
 
 						js(".a-value-insert p").innerHTML = Calc.valueString
 					}
 				}
-				else if(!keyFind && Calc.count <= 2 && e.key != "Backspace")
+				else if(!keyFind && e.key != "Backspace")
 				{
 					if(Calc.valueString.length > 1)
 						Calc.valueString += " " + e.key
@@ -110,7 +108,6 @@ Calc.ActionCalc = (e) =>
 						Calc.temporary = e.key
 
 					Calc.value += e.key
-					Calc.count++
 					Calc.status = true
 				}
 				else if(keyFind && Calc.count <= 2)
@@ -149,26 +146,9 @@ Calc.ActionCalc = (e) =>
 	}
 }
 
-Calc.Operation = (value, op) =>
+Calc.Operation = (value) =>
 {
-	let valueT = value.split(op)
-
-	valueT[0] = parseInt(valueT[0])
-	valueT[1] = parseInt(valueT[1])
-
-	if(valueT[0] && valueT[1])
-	{
-		if(op == "+")
-			result = valueT[0] + valueT[1]
-		else if(op == "-")
-			result = valueT[0] - valueT[1]
-		else if(op == "*")
-			result = valueT[0] * valueT[1]
-		else if(op == "/")
-			result = valueT[0] / valueT[1]
-	}
-
-	return result.toString()
+	return eval(value).toString()
 }
 
 Calc.VerifyOperator = (e, op) =>
