@@ -35,6 +35,18 @@ Calc.Operator    	= "+"
 Calc.value 			= ""
 Calc.count 			= 0
 
+jsAll('.buttons-action li').forEach((element) =>
+{
+	element.addEventListener("click", (event) =>
+	{
+		let e = {}
+		e.key = element.getAttribute('key')
+		e.keyCode = "click"
+
+		Calc.ActionCalc(e)
+	})
+})
+
 document.addEventListener("keyup", (e) =>
 {
 	Calc.ActionCalc(e)	
@@ -49,7 +61,7 @@ Calc.ActionCalc = (e) =>
 			const keyCode = e.keyCode
 			let keyFind   = false
 
-			if(Calc.key[keyCode])
+			if(keyCode && Calc.key[keyCode] || keyCode == "click")
 			{
 				jsAll(`.buttons-action li`).forEach((e) =>
 				{
@@ -68,7 +80,7 @@ Calc.ActionCalc = (e) =>
 				{
 					if(Calc.status && Calc.value.length > 0)
 					{
-						Calc.temporary = Calc.Operation(Calc.value)
+						Calc.temporary = Calc.Operation(Calc.value, Calc.Operator)
 						if(Calc.value != Calc.temporary)
 						{
 							Calc.value = Calc.temporary
@@ -81,6 +93,16 @@ Calc.ActionCalc = (e) =>
 						Calc.status = true
 						Calc.count  = 0
 					}
+				}
+				else if(e.key == "CE" || e.key == "C")
+				{
+					Calc.value 	   	 = ""
+					Calc.valueString = ""
+					Calc.status    	 = true
+					Calc.temporary 	 = "0"
+					keyFind 	   	 = false
+
+					js(".a-value-insert p").innerHTML = Calc.valueString
 				}
 				else if(e.key == "Backspace")
 				{
@@ -102,7 +124,7 @@ Calc.ActionCalc = (e) =>
 					else
 						Calc.valueString = " " + e.key
 
-					if(Calc.temporary)
+					if(Calc.temporary && Calc.temporary != "0")
 						Calc.temporary += e.key
 					else
 						Calc.temporary = e.key
@@ -146,9 +168,30 @@ Calc.ActionCalc = (e) =>
 	}
 }
 
-Calc.Operation = (value) =>
+Calc.Operation = (value, op) =>
 {
-	return eval(value).toString()
+	let valueT = value.substring(value.length - 1, value.length)
+
+	if(valueT && op && valueT == "%")
+	{
+		value = value.substring(0, value.length - 1).split(op)
+
+		if(value[0] && value[1])
+		{
+			let x = value[0] * value[1] / 100
+
+			return (value[0] - x).toString()
+		}
+	}
+
+	value = value.split(",")
+
+	if(value[0] && value[1])
+	{
+		let valueFixed = `${value[0]}.${value[1]}`
+
+		return eval(valueFixed).toString()
+	}
 }
 
 Calc.VerifyOperator = (e, op) =>
